@@ -1,5 +1,5 @@
+from Database import *
 
-def main():
     # Program flow:
     # (not necessarily all executed in main, I'm just trying to decrypt the assignment spec)
     #
@@ -37,9 +37,35 @@ def main():
     #       - repeat the same to get set F2
     #       - note* these steps are the same as the first steps in "Compute attribute closure"
     #       - tell the user whether the two sets are equivalent
+def BCNFconvert():
+    rows = db.getInputTable()
+    
+def AttributeClosure():
+    print("Computing attribute closure")
 
+def EquivalentFDSets():
+    print("Computing if two sets equivalent")
 
-    pass
+def main():
+
+    global db
+    db = Database()
+    print("To perform BCNF normalisation and decompostion enter n.")
+    print("To compute attribute closure enter a.")
+    print("To check eqivalence between two FD sets enter e.")
+    print("Press q to quit.")
+    while(True):
+        option = input("->")
+        if option == 'q':
+            return
+        elif option == 'n':
+            BCNFconvert()
+        elif option == 'a':
+            AttributeClosure()
+        elif option == 'e':
+            EquivalentFDSets()
+        else:
+            print("Not a valid entry. Try again.")
 
 if __name__ == '__main__':
     main()
