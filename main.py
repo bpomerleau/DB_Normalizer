@@ -63,7 +63,7 @@ def BCNFconvert():
 def AttributeClosure():
     print(chr(27) + "[2J")
     schemas = []
-    FDs = ()
+    FDs = []
     printTable(db.getInputTable())
     print("")
     print("Add a schema by name. When finished press enter. q to quit.")
@@ -82,13 +82,19 @@ def AttributeClosure():
         else:
             print("Invalid name. Try again.")
     for name in schemas:
-        tmp = db.getFD(name)[0] + ';'
-        tmp.split(" ")
+        tmp = (db.getFD(name)[0] + ';').split(" ")
         for fd in tmp:
-            FDs.append(fd)
+            if fd not in FDs:
+                FDs.append(fd)
     print(FDs)
+    print("Input comma separated list of attributes.")
+    attr = input("->").split(",")
+    attr = [x.strip() for x in attr]
+    
 
-    input("check results")
+
+
+    input()
 
 def EquivalentFDSets():
     print("Computing if two sets equivalent")
