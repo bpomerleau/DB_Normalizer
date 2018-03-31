@@ -28,4 +28,12 @@ class Database():
     def getFD(self, name):
         query = "SELECT FDs FROM InputRelationSchemas WHERE Name = ?"
         self.cursor.execute(query, (name,))
-        return self.cursor.fetchone()
+        FDs = set()
+        for fd in (self.cursor.fetchone()[0] + ';').split(" "):
+            FDs.add(fd)
+        return FDs
+
+    def getAttributes(self, name):
+        query = "SELECT Attributes FROM InputRelationSchemas WHERE Name = ?"
+        self.cursor.execute(query, (name,))
+        return self.cursor.fetchone()[0]

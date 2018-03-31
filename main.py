@@ -39,7 +39,7 @@ from Normaliser import *
     #       - note* these steps are the same as the first steps in "Compute attribute closure"
     #       - tell the user whether the two sets are equivalent
 def printTable(rows):
-    # good enough for now
+    # good enough for now - we can improve this if there's time
     for row in rows:
         print(row)
 
@@ -53,7 +53,6 @@ def BCNFconvert():
         if db.nameExists(name):   #TODO check for empty name
             print("Valid schema name.")
             norm.normalise(db, name)
-            #check dependency conserving and tell user
             return
         elif name == 'q':
             return
@@ -62,8 +61,9 @@ def BCNFconvert():
 
 def AttributeClosure():
     print(chr(27) + "[2J")
+    norm = Normaliser()
     schemas = []
-    FDs = []
+    FDs = set()
     printTable(db.getInputTable())
     print("")
     print("Add a schema by name. When finished press enter. q to quit.")
@@ -81,23 +81,49 @@ def AttributeClosure():
             return
         else:
             print("Invalid name. Try again.")
-    for name in schemas:
-        tmp = (db.getFD(name)[0] + ';').split(" ")
-        for fd in tmp:
-            if fd not in FDs:
-                FDs.append(fd)
-    print(FDs)
-    print("Input comma separated list of attributes.")
-    attr = input("->").split(",")
-    attr = [x.strip() for x in attr]
-    
 
+    for name in schemas:
+        FDs = FDs.union(db.getFD(name))
+
+
+    print("Input comma separated list of attributes.")
+    attr = [x.strip() for x in input("->").split(",")]
+    print(norm.getClosure(attr, FDs))
 
 
     input()
 
 def EquivalentFDSets():
-    print("Computing if two sets equivalent")
+    print(chr(27) + "[2J")
+    norm = Normaliser()
+    FDs = [set(), set()]
+    printTable(db.getInputTable())
+    print("")
+    for i in range(0,2):
+        schemas = []
+        print("Add a schema by name to FD{0}.\nWhen finished press enter. q to quit.".format(i+1))
+        while True:
+            name = input("->")
+            if name == "":
+                break
+            elif db.nameExists(name):
+                if name not in schemas:
+                    schemas.append(name)
+                    print("Schema added.")
+                else:
+                    print("Selection already included.")
+            elif name == 'q':
+                return
+            else:
+                print("Invalid name. Try again.")
+        for name in schemas:
+                FDs[i] = FDs[i].union(db.getFD(name))
+    if norm.equivalentSets(FDs[0], FDs[1]):
+        print("Sets are equivalent.")
+    else:
+        print("Sets are not equivalent")
+
+    input("Press <<ENTER>> to continue.")
 
 def main():
     def printMenu():
