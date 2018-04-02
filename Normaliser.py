@@ -15,29 +15,52 @@ class Normaliser:
             BCNF = True
             for table in tables:
                 for fd in table[1]:
-                    if not self.getClosure(fd[0], table[1]) >= table[0]:
+                    print("FD",fd,"\n")
+                    print("Closure",self.getClosure(fd[0],table[1]),"\n")
+                    print("Attributes",table[0],"\n")
+                    if not (self.getClosure(fd[0], table[1]) >= table[0]):
                         BCNF = False
+                        print("FD attr ",fd[0],"\n")
                         fds1 = [fd]
                         table1 = [fd[0].union(fd[1]),fds1]
-
-                        continue
+                        # print("TABLE ",table[0],"\n")
+                        attrSet2 = self.decomposeAttributes(table[0],fd)
+                        fds2 = self.decomposeFDs(fd,table[1])
+                        table2 = [attrSet2,fds2]
+                        tables.remove(table)
+                        tables.append(table1)
+                        tables.append(table2)
+                        break
+                break
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
+    def decomposeAttributes(self,attrSet,fd):
+        temp = attrSet|fd[0]
+        # print("ATTRSET",attrSet,"\n")
+        if temp:
+            for attr in temp:
+                attrSet = attrSet.remove(attr)
+        temp = attrSet|fd[1]
+        if temp:
+            for attr in temp:
+                attrSet = attrSet.remove(attr)
+        return attrSet
+
 
     def decomposeFDs(self, fd, fdList): #remove attributes from fds of 'remainder table' ie
-        newfdList = fdList.remove(fd)   #given ABCD:{A->ABCD,B->C} decompose into AD:{A->D} and BC:{B->C} where the former is remainder
+        newfdList = fdList.remove(fd)   #given ABCD:{A->BCD,B->C} decompose into AD:{A->D} and BC:{B->C} where the former is remainder
         attrSet = fd[0].union(fd[1])    #this function currently only decomposes the FD list
         for item in newfdList:
             temp = item[0]|attrSet
             if temp:
                 for attr in temp:
                     item[0].remove(attr)
-            temp = item[1]|attrSet:
+            temp = item[1]|attrSet
             if temp:
                 for attr in temp:
                     item[1].remove(attr)
-            if not item[0] and not item[1]:
+            if not item[0] and not item[1]: #if removing attributes left empy sets, remove it
                 newfdList.remove(item)
         return newfdList
 
@@ -45,7 +68,7 @@ class Normaliser:
         return True
 
     def getClosure(self, attr, fds):
-        closure = attr #SET of attributes
+        closure = attr #SET of lhs attributes
         old = set()
         while old != closure:
             old = closure
