@@ -9,16 +9,17 @@ class Normaliser:
             # else decompose table
                 # one table is all attributes in FD that violates BCNF
                 # other table is everything less LHS of FD
-        table = [db.getAttributeSet(name), db.getFDSetList(name)]
+        tables = [[db.getAttributeSet(name), db.getFDSetList(name)]]
         BCNF = False
         while not BCNF:
             BCNF = True
-            for fd in table[1]:
-                if not self.getClosure(fd[0], table[1]) >= table[0]:
-                    BCNF = False
+            for table in tables:
+                for fd in table[1]:
+                    if not self.getClosure(fd[0], table[1]) >= table[0]:
+                        BCNF = False
 
 
-                    continue
+                        continue
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
