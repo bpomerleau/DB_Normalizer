@@ -39,7 +39,11 @@ class Normaliser:
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
-    def decomposeAttributes(self,attrSet,fd):
+
+    # def ouputNormalization(self, db, tables):
+
+
+    def decomposeAttributes(self, attrSet, fd):
         return [fd[0].union(fd[1]),attrSet.difference(fd[1].difference(fd[0]))]
 
 
@@ -60,7 +64,7 @@ class Normaliser:
             if item[0] <= remainderAttrSet:
                 temp = item[1].difference(attrSet.difference(remainderAttrSet))
                 if temp:
-                    remainderfdList.append(temp)
+                    remainderfdList.append([item[0],temp])
 
         return [quotientfdList,remainderfdList]
 
