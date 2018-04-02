@@ -14,7 +14,7 @@ class Normaliser:
         while not BCNF:
             BCNF = True
             for fd in table[1]:
-                if not self.getClosure(fd).issubset(table[0]):
+                if not self.getClosure(fd, table[1]).issubset(table[0]):
                     BCNF = False
 
 
@@ -26,7 +26,15 @@ class Normaliser:
     def equivalentSets(self, set1, set2):
         return True
 
-    def getClosure(self, fd):
+    def getClosure(self, fd, fds):
+        closure = fd[0] #lhs of fd in question
+        old = set()
+        while old != closure:
+            old = closure
+            for fd in fds:
+                if fd[0].issubset(closure) and not fd[1].issubset(closure):
+                    closure = closure.union(fd[1])
+        return closure
 
         return fd[0]
 
