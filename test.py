@@ -1,4 +1,5 @@
 from Database import*
+from Normaliser import*
 
 def main():
     x = ["once", "twice", "twice", "thrice"]
@@ -24,6 +25,12 @@ def main():
     print(lst)
     attrList = db.getAttributes("Person").split(",")
     print(set(attrList))
+    norm = Normaliser()
+    norm.normalise(db,"Person")
+
+    # testSet = set(['a','b','c'])
+    # testSet2 = set(['b'])
+    # print(testSet2.difference(testSet.difference(testSet2)))
 
 if __name__ == "__main__":
     main()

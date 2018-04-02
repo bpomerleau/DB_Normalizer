@@ -52,4 +52,4 @@ class Database():
         return lst
 
     def getAttributeSet(self,name):
-        return set(self.getAttributes("Person").split(","))
+        return set(self.getAttributes(name).split(","))
