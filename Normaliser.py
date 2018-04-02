@@ -21,6 +21,7 @@ class Normaliser:
                     if not (self.getClosure(fd[0], table[1]) >= table[0]):
                         BCNF = False
                         print("FD attr ",fd[0],"\n")
+                        print("FD R",fd[1],"\n")
                         fds1 = [fd]
                         table1 = [fd[0].union(fd[1]),fds1]
                         # print("TABLE ",table[0],"\n")
@@ -36,15 +37,7 @@ class Normaliser:
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
     def decomposeAttributes(self,attrSet,fd):
-        temp = attrSet|fd[0]
-        # print("ATTRSET",attrSet,"\n")
-        if temp:
-            for attr in temp:
-                attrSet = attrSet.remove(attr)
-        temp = attrSet|fd[1]
-        if temp:
-            for attr in temp:
-                attrSet = attrSet.remove(attr)
+        attrSet = attrSet.difference(fd[1].difference(fd[0]))
         return attrSet
 
 
