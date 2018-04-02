@@ -16,11 +16,14 @@ def main():
         temp = temp.replace("}","")
         temp = temp.replace(";","")
         lst.append(temp.split("=>"))
-        # temp = temp.split(";")
-    # for fd in temp:
-    #     t = fd.split("=>")
-    #     lst.append(t)
+    for fd in lst:
+        fd[0] = set(fd[0].split(","))
+        fd[1] = set(fd[1].split(","))
+    #lst is now a list of two element lists containing the sets of each side of the =>
+    #making them lists of sets makes it easy to do subset checks for the closure calculation
     print(lst)
+    attrList = db.getAttributes("Person").split(",")
+    print(set(attrList))
 
 if __name__ == "__main__":
     main()
