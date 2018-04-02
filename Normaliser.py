@@ -9,14 +9,12 @@ class Normaliser:
             # else decompose table
                 # one table is all attributes in FD that violates BCNF
                 # other table is everything less LHS of FD
-        tables = []
-        tables.append([db.getAttributes(name), db.getFD(name)])
+        table = [db.getAttributeSet(name), db.getFDSetList(name)]
         BCNF = False
-        while (not BCNF)
+        while not BCNF:
             BCNF = True
-            for table in tables:
-                for fd in table[1]:
-                    if not self.getClosure(self.lhs(fd), table[1]) == attr:
+            for fd in table[1]:
+                if not self.getClosure(fd).issubset(table[0]):
                     BCNF = False
 
 
@@ -28,8 +26,9 @@ class Normaliser:
     def equivalentSets(self, set1, set2):
         return True
 
-    def getClosure(self, attributes, FDs):
-        return attributes
+    def getClosure(self, fd):
+
+        return fd[0]
 
     def lhs(self, fd):
-        return set()
+        return fd[0]

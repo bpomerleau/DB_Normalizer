@@ -1,4 +1,5 @@
 from Database import*
+from Normaliser import*
 
 def main():
     x = ["once", "twice", "twice", "thrice"]
@@ -24,6 +25,8 @@ def main():
     print(lst)
     attrList = db.getAttributes("Person").split(",")
     print(set(attrList))
+    norm = Normaliser()
+    norm.normalise(db,"Person")
 
 if __name__ == "__main__":
     main()
