@@ -20,7 +20,7 @@ class Normaliser:
                     # print("Attributes",table[0],"\n")
                     if not (self.getClosure(fd[0], table[1]) >= table[0]):
                         BCNF = False
-                        print("FD attr ",fd[0],"\n")
+                        # print("FD attr ",fd[0],"\n")
                         # print("FD R",fd[1],"\n")
                         decompFD = self.decomposeFDs(table[0],fd,table[1])
                         decompAttr = self.decomposeAttributes(table[0],fd)
@@ -33,7 +33,9 @@ class Normaliser:
                         tables.append(table2)
                         break
                 break
-        print("Result", tables, "\n")
+        print("Result\n")
+        for table in tables:
+            print(table, "\n")
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
@@ -44,17 +46,21 @@ class Normaliser:
     def decomposeFDs(self, attrSet, fd, fdList): #remove attributes from fds of 'remainder table' ie
         decompAttr = self.decomposeAttributes(attrSet,fd)
         quotientfdList = list()
-        remainderfdList = fdList
+        remainderfdList = list()
 
         quotientAttrSet = decompAttr[0]
         for item in fdList:
             if item[0] <= quotientAttrSet:
+                # print(item)
                 quotientfdList.append(item)
 
         remainderAttrSet = decompAttr[1]
+        # print("Remainder Set",remainderAttrSet,"\n")
         for item in fdList:
-            if not (item[0] <= remainderAttrSet):
-                remainderfdList.remove(item)
+            if item[0] <= remainderAttrSet:
+                temp = item[1].difference(attrSet.difference(remainderAttrSet))
+                if temp:
+                    remainderfdList.append(temp)
 
         return [quotientfdList,remainderfdList]
 
