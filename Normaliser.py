@@ -37,10 +37,11 @@ class Normaliser:
         for table in tables:
             print(table, "\n")
         self.encodeOutput(db,tables,name)
-        if self.equivalentSets(db.getFDSetList(name), db.getOutputFDUnion(name)):
-            print("Decomposition is dependency conserving.")
+
+        if self.equivalentSets(db.getFD(name), db.getOutputFDUnion(name)):
+            print("Decomposition is dependency preserving.")
         else:
-            print("Decomposition is not dependency conserving.")
+            print("Decomposition is not dependency preserving.")
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
@@ -85,7 +86,9 @@ class Normaliser:
                 tableFDs = tableFDs + leftStr + "=>" + rightStr + "; "
             print(tableFDs)
             db.outputNormalization(tableName,tableAttributes,tableFDs)
-        db.addDecomposedTables(name,tables,nameList)
+
+        if (db.instanceExists(name)):
+            db.addDecomposedTables(name,tables,nameList)
 
     def decomposeAttributes(self, attrSet, fd):
         return [fd[0].union(fd[1]),attrSet.difference(fd[1].difference(fd[0]))]
@@ -94,15 +97,7 @@ class Normaliser:
     def decomposeFDs(self, attrSet, fd, fdList): #remove attributes from fds of 'remainder table' ie
         decompAttr = self.decomposeAttributes(attrSet,fd)
         returnFDs = list()
-        #
-        # quotientAttrSet = decompAttr[0]
-        # for item in fdList:
-        #     if item[0].issubset(quotientAttrSet) and item[1].intersection(quotientAttrSet):
-        #         quotientfdList.append([item[0],item[1].intersection(quotientAttrSet))
-        #
-        # remainderAttrSet = decompAttr[1]
-        # for item in fdList:
-        #
+
         for set in decompAttr:
             partfdList = []
             for item in fdList:
@@ -115,24 +110,29 @@ class Normaliser:
     def equivalentSets(self, set1, set2):
         lst1 = []
         for fd in set1:
-            lst1.append(fd.replace('{','').replace('}','').replace(';','').split("=>"))
+            lst1.append(fd.replace('{','').replace('}','').replace(';','').replace(" ","").split("=>"))
         for fd in lst1:
             fd[0] = set(fd[0].split(","))
             fd[1] = set(fd[1].split(","))
 
         lst2 = []
         for fd in set2:
-            lst2.append(fd.replace("{","").replace("}","").replace(";","").split("=>"))
+            lst2.append(fd.replace("{","").replace("}","").replace(";","").replace(" ","").split("=>"))
         for fd in lst2:
             fd[0] = set(fd[0].split(","))
             fd[1] = set(fd[1].split(","))
+        print("lst1: ", lst1)
+        print("lst2: ", lst2)
 
         for fd in lst1:
             if not fd[1].issubset(self.getClosure(fd[0], lst2)):
+                print("failed fd from lst1: ", fd)
+                print(self.getClosure(fd[0], lst2))
                 return False
 
         for fd in lst2:
             if not fd[1].issubset(self.getClosure(fd[0], lst1)):
+                print("failed fd: ", fd)
                 return False
 
         return True

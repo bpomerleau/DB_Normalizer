@@ -67,7 +67,7 @@ class Database():
             # print(row[1],row[2]
         for index in range(len(tables)):
             table = tables[index]
-            # self.cursor.execute('''DROP TABLE IF EXISTS {}'''.format(nameList[index]))
+            self.cursor.execute('''DROP TABLE IF EXISTS {}'''.format(nameList[index]))
             createStr = "CREATE TABLE " + nameList[index] + " ( "
             for attr in list(table[0]):
                 createStr = createStr + attr +" "+typeDict[attr][0]+", "
@@ -116,15 +116,17 @@ class Database():
             # insertStr = insertStr + selectStr
             # self.cursor.execute(insertStr)
             # self.connection.commit()
+
+    def instanceExists(self, name):
+        query = '''SELECT hasInstance FROM InputRelationSchemas WHERE Name = ?'''
+        self.cursor.execute(query, (name,))
+        (result,) = self.cursor.fetchone()
+        return(result)
+
     def getOutputFDUnion(self, name):
-        query = """SELECT FDs FROM OutputRelationSchemas WHERE Name LIKE ':name_%' """
-        self.cursor.execute(query,{"name":name})
+        query = 'SELECT FDs FROM OutputRelationSchemas WHERE Name LIKE \"' + name + '_%\"'
+        self.cursor.execute(query)
         FDUnionSet = set()
-        print("DatabaseOutputUnion debug begin.")
-        print(name)
-        print(self.cursor.fetchall())
-        input("Pause to print")
-        # for fd in self.cursor.fetchall():
-        #     print(fd)
-        #     FDUnionSet = FDUnionSet.union(fd)
+        for fd in self.cursor.fetchall():
+            FDUnionSet = FDUnionSet.union(fd)
         return FDUnionSet
