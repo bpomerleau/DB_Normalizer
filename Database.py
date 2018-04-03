@@ -53,3 +53,16 @@ class Database():
 
     def getAttributeSet(self,name):
         return set(self.getAttributes(name).split(","))
+
+    def outputNormalization(self,name,attributes,FDs):
+        self.cursor.execute('''INSERT OR IGNORE INTO OutputRelationSchemas VALUES (?,?,?)''',(name,attributes,FDs))
+        self.connection.commit()
+
+    def addDecomposedTable(self,originalName,newName,table):
+        self.cursor.execute('''PRAGMA table_info({})'''.format(originalName))
+        allrows = self.cursor.fetchall()
+        typeDict = dict()
+        for row in allrows:
+            typeDict[row[1]] = row[2]
+            # print(row[1],row[2])
+        

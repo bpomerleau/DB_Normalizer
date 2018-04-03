@@ -36,12 +36,50 @@ class Normaliser:
         print("Result\n")
         for table in tables:
             print(table, "\n")
+        self.encodeOutput(db,tables,name)
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user
 
-    # def ouputNormalization(self, db, tables):
+    def encodeOutput(self, db, tables, name):
+        for table in tables:
+            sortedAttributes = sorted(table[0])
+            print(sortedAttributes)
+            tableName = name
+            for attr in sortedAttributes:
+                tableName = tableName+"_"+attr
+            print(tableName)
 
+            tableAttributes = str()
+            for i in range(len(sortedAttributes)):
+                if i == len(sortedAttributes)-1:
+                    tableAttributes = tableAttributes + sortedAttributes[i]
+                    break
+                tableAttributes = tableAttributes + sortedAttributes[i] + ","
+            print(tableAttributes)
+
+            fdList = table[1]
+            tableFDs = str()
+            for i in range(len(fdList)):
+                sortedFDLeft = sorted(fdList[i][0])
+                sortedFDRight = sorted(fdList[i][1])
+                leftStr = "{"
+                rightStr = "{"
+                for i in range(len(sortedFDLeft)):
+                    if i == len(sortedFDLeft)-1:
+                        leftStr = leftStr + sortedFDLeft[i] + "}"
+                        break
+                    leftStr = leftStr + sortedFDLeft[i] + ","
+
+                for i in range(len(sortedFDRight)):
+                    if i == len(sortedFDRight)-1:
+                        rightStr = rightStr + sortedFDRight[i] + "}"
+                        break
+                    rightStr = rightStr + sortedFDRight[i] + ","
+                tableFDs = tableFDs + leftStr + "=>" + rightStr + "; "
+            print(tableFDs)
+            db.outputNormalization(tableName,tableAttributes,tableFDs)
+            db.addDecomposedTable(name,tableName,table)
 
     def decomposeAttributes(self, attrSet, fd):
         return [fd[0].union(fd[1]),attrSet.difference(fd[1].difference(fd[0]))]
