@@ -83,7 +83,7 @@ def AttributeClosure():
             print("Invalid name. Try again.")
 
     for name in schemas:
-        FDs = FDs.union(db.getFD(name))
+        FDs = FDs.union(set(db.getFD(name)))
 
 
     print("Input comma separated list of attributes.")
@@ -117,7 +117,7 @@ def EquivalentFDSets():
             else:
                 print("Invalid name. Try again.")
         for name in schemas:
-                FDs[i] = FDs[i].union(db.getFD(name))
+                FDs[i] = FDs[i].union(set(db.getFD(name)))
     if norm.equivalentSets(FDs[0], FDs[1]):
         print("Sets are equivalent.")
     else:

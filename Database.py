@@ -28,9 +28,9 @@ class Database():
     def getFD(self, name):
         query = "SELECT FDs FROM InputRelationSchemas WHERE Name = ?"
         self.cursor.execute(query, (name,))
-        FDs = set()
+        FDs = list()
         for fd in (self.cursor.fetchone()[0] + ';').split(" "):
-            FDs.add(fd)
+            FDs.append(fd)
         return FDs
 
     def getAttributes(self, name):
