@@ -46,6 +46,7 @@ class Normaliser:
         #check dependency conserving and tell user
 
     def encodeOutput(self, db, tables, name):
+        nameList = list()
         for table in tables:
             sortedAttributes = sorted(table[0])
             print(sortedAttributes)
@@ -53,6 +54,7 @@ class Normaliser:
             for attr in sortedAttributes:
                 tableName = tableName+"_"+attr
             print(tableName)
+            nameList.append(tableName)
 
             tableAttributes = str()
             for i in range(len(sortedAttributes)):
@@ -83,7 +85,7 @@ class Normaliser:
                 tableFDs = tableFDs + leftStr + "=>" + rightStr + "; "
             print(tableFDs)
             db.outputNormalization(tableName,tableAttributes,tableFDs)
-            db.addDecomposedTable(name,tableName,table)
+        db.addDecomposedTables(name,tables,nameList)
 
     def decomposeAttributes(self, attrSet, fd):
         return [fd[0].union(fd[1]),attrSet.difference(fd[1].difference(fd[0]))]
