@@ -103,19 +103,19 @@ class Database():
             self.cursor.execute(createStr)
             self.connection.commit()
 
-            # attrList = sorted(table[0])
-            # insertStr = "INSERT OR REPLACE INTO " + nameList[index]
-            # columnStr = ""
-            # for i in range(len(attrList)):
-            #     if i == len(attrList)-1:
-            #         columnStr = columnStr + attrList[i]
-            #         break
-            #     columnStr = columnStr + attrList[i] + ","
-            # print(primaryKey)
-            # selectStr = " SELECT DISTINCT " + columnStr + " FROM " + originalName + " GROUP BY " + primaryKey + ";"
-            # insertStr = insertStr + selectStr
-            # self.cursor.execute(insertStr)
-            # self.connection.commit()
+            attrList = sorted(table[0])
+            insertStr = "INSERT OR REPLACE INTO " + nameList[index]
+            columnStr = ""
+            for i in range(len(attrList)):
+                if i == len(attrList)-1:
+                    columnStr = columnStr + attrList[i]
+                    continue
+                columnStr = columnStr + attrList[i] + ","
+            print(primaryKey)
+            selectStr = " SELECT " + columnStr + " FROM " + originalName + ";"
+            insertStr = insertStr + selectStr
+            self.cursor.execute(insertStr)
+            self.connection.commit()
 
     def instanceExists(self, name):
         query = '''SELECT hasInstance FROM InputRelationSchemas WHERE Name = ?'''
