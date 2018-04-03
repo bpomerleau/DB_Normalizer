@@ -67,7 +67,7 @@ class Database():
             # print(row[1],row[2])
         for index in range(len(tables)):
             table = tables[index]
-            self.cursor.execute('''DROP TABLE IF EXISTS {}'''.format(nameList[index]))
+            # self.cursor.execute('''DROP TABLE IF EXISTS {}'''.format(nameList[index]))
             createStr = "CREATE TABLE " + nameList[index] + " ( "
             for attr in list(table[0]):
                 createStr = createStr + attr +" "+typeDict[attr][0]+", "
@@ -103,16 +103,16 @@ class Database():
             self.cursor.execute(createStr)
             self.connection.commit()
 
-            attrList = sorted(table[0])
-            insertStr = "INSERT OR REPLACE INTO " + nameList[index]
-            columnStr = ""
-            for i in range(len(attrList)):
-                if i == len(attrList)-1:
-                    columnStr = columnStr + attrList[i]
-                    break
-                columnStr = columnStr + attrList[i] + ","
-            print(primaryKey)
-            selectStr = " SELECT DISTINCT " + columnStr + " FROM " + originalName + " GROUP BY " + primaryKey + ";"
-            insertStr = insertStr + selectStr
-            self.cursor.execute(insertStr)
-            self.connection.commit()
+            # attrList = sorted(table[0])
+            # insertStr = "INSERT OR REPLACE INTO " + nameList[index]
+            # columnStr = ""
+            # for i in range(len(attrList)):
+            #     if i == len(attrList)-1:
+            #         columnStr = columnStr + attrList[i]
+            #         break
+            #     columnStr = columnStr + attrList[i] + ","
+            # print(primaryKey)
+            # selectStr = " SELECT DISTINCT " + columnStr + " FROM " + originalName + " GROUP BY " + primaryKey + ";"
+            # insertStr = insertStr + selectStr
+            # self.cursor.execute(insertStr)
+            # self.connection.commit()
