@@ -4,9 +4,7 @@ def listreturn():
     return [["one"],["two"]]
 
 def main():
-    [one, two] = listreturn()
-    print(one)
-    print(two)
+    
     # x = ["once", "twice", "twice", "thrice"]
     # y = set()
     # for thing in x:

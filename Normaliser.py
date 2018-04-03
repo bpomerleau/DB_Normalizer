@@ -109,6 +109,28 @@ class Normaliser:
 
 
     def equivalentSets(self, set1, set2):
+        lst1 = []
+        for fd in set1:
+            lst1.append(fd.replace('{','').replace('}','').replace(';','').split("=>"))
+        for fd in lst1:
+            fd[0] = set(fd[0].split(","))
+            fd[1] = set(fd[1].split(","))
+
+        lst2 = []
+        for fd in set2:
+            lst2.append(fd.replace("{","").replace("}","").replace(";","").split("=>"))
+        for fd in lst2:
+            fd[0] = set(fd[0].split(","))
+            fd[1] = set(fd[1].split(","))
+
+        for fd in lst1:
+            if not fd[1].issubset(self.getClosure(fd[0], lst2)):
+                return False
+
+        for fd in lst2:
+            if not fd[1].issubset(self.getClosure(fd[0], lst1)):
+                return False
+
         return True
 
     def getClosure(self, attr, fds):
