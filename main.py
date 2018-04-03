@@ -78,17 +78,25 @@ def AttributeClosure():
             else:
                 print("Selection already included.")
         elif name == 'q':
-            return
+            break
         else:
             print("Invalid name. Try again.")
 
     for name in schemas:
         FDs = FDs.union(set(db.getFD(name)))
-
+        lst = list()
+        for fd in FDs:
+            temp = fd.replace("{","")
+            temp = temp.replace("}","")
+            temp = temp.replace(";","")
+            lst.append(temp.split("=>"))
+        for fd in lst:
+            fd[0] = set(fd[0].split(","))
+            fd[1] = set(fd[1].split(","))
 
     print("Input comma separated list of attributes.")
     attr = [x.strip() for x in input("->").split(",")]
-    print(norm.getClosure(attr, FDs))
+    print(sorted(norm.getClosure(set(attr), lst)))
 
 
     input()
