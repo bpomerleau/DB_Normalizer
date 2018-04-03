@@ -97,14 +97,12 @@ class Normaliser:
         # remainderAttrSet = decompAttr[1]
         # for item in fdList:
         #
-
         for set in decompAttr:
             partfdList = []
             for item in fdList:
                 if item[0].issubset(set) and item[1].intersection(set):
                     partfdList.append([item[0],item[1].intersection(set)])
             returnFDs.append(partfdList)
-
         return returnFDs
 
 
