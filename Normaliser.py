@@ -11,6 +11,7 @@ class Normaliser:
                 # other table is everything less LHS of FD
         tables = [[db.getAttributeSet(name), db.getFDSetList(name)]]
         BCNF = False
+        print(tables)
         while not BCNF:
             BCNF = True
             for table in tables:
@@ -32,7 +33,6 @@ class Normaliser:
                         tables.append(table1)
                         tables.append(table2)
                         break
-                break
         print("Result\n")
         for table in tables:
             print(table, "\n")
@@ -87,24 +87,25 @@ class Normaliser:
 
     def decomposeFDs(self, attrSet, fd, fdList): #remove attributes from fds of 'remainder table' ie
         decompAttr = self.decomposeAttributes(attrSet,fd)
-        quotientfdList = list()
-        remainderfdList = list()
+        returnFDs = list()
+        #
+        # quotientAttrSet = decompAttr[0]
+        # for item in fdList:
+        #     if item[0].issubset(quotientAttrSet) and item[1].intersection(quotientAttrSet):
+        #         quotientfdList.append([item[0],item[1].intersection(quotientAttrSet))
+        #
+        # remainderAttrSet = decompAttr[1]
+        # for item in fdList:
+        #
 
-        quotientAttrSet = decompAttr[0]
-        for item in fdList:
-            if item[0] <= quotientAttrSet:
-                # print(item)
-                quotientfdList.append(item)
+        for set in decompAttr:
+            partfdList = []
+            for item in fdList:
+                if item[0].issubset(set) and item[1].intersection(set):
+                    partfdList.append([item[0],item[1].intersection(set)])
+            returnFDs.append(partfdList)
 
-        remainderAttrSet = decompAttr[1]
-        # print("Remainder Set",remainderAttrSet,"\n")
-        for item in fdList:
-            if item[0] <= remainderAttrSet:
-                temp = item[1].difference(attrSet.difference(remainderAttrSet))
-                if temp:
-                    remainderfdList.append([item[0],temp])
-
-        return [quotientfdList,remainderfdList]
+        return returnFDs
 
 
     def equivalentSets(self, set1, set2):
