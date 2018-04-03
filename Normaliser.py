@@ -37,6 +37,10 @@ class Normaliser:
         for table in tables:
             print(table, "\n")
         self.encodeOutput(db,tables,name)
+        if self.equivalentSets(db.getFDSetList(name), db.getOutputFDUnion(name)):
+            print("Decomposition is dependency conserving.")
+        else:
+            print("Decomposition is not dependency conserving.")
         #store new schemas in OutputRelationSchemas
         #if instances exist for 'name' create and populate tables for new schemas
         #check dependency conserving and tell user

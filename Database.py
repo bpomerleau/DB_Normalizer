@@ -65,4 +65,16 @@ class Database():
         for row in allrows:
             typeDict[row[1]] = row[2]
             # print(row[1],row[2])
-        
+
+    def getOutputFDUnion(self, name):
+        query = """SELECT FDs FROM OutputRelationSchemas WHERE Name LIKE ':name_%' """
+        self.cursor.execute(query,{"name":name})
+        FDUnionSet = set()
+        print("DatabaseOutputUnion debug begin.")
+        print(name)
+        print(self.cursor.fetchall())
+        input("Pause to print")
+        # for fd in self.cursor.fetchall():
+        #     print(fd)
+        #     FDUnionSet = FDUnionSet.union(fd)
+        return FDUnionSet
